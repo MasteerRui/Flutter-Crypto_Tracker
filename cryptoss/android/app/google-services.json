@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "950254744378",
+    "firebase_url": "https://escola-ruis-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "escola-ruis",
+    "storage_bucket": "escola-ruis.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:950254744378:android:91c8fd8e25566ecb011603",
+        "android_client_info": {
+          "package_name": "com.example.cryptoss"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "950254744378-6ago5skmvapt076nk42cejc70r3dq6ms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHnjE-z0kily2AwirHHOi6EGivxczXiXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "950254744378-6ago5skmvapt076nk42cejc70r3dq6ms.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
