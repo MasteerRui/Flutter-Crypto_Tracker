@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 class Styles {
   static ThemeData themeData(bool isDarkTheme, BuildContext context) {
     return ThemeData(
-      primaryColor:
-          isDarkTheme ? const Color(0xFF181616) : const Color(0xFFf3f1f7),
+      primaryColor: isDarkTheme
+          ? const Color(0xFF121212)
+          : Color.fromARGB(255, 236, 236, 236),
       backgroundColor:
-          isDarkTheme ? const Color(0xFF242323) : const Color(0xFFffffff),
+          isDarkTheme ? const Color(0xFF242323) : const Color(0xFCffffff),
       textTheme: TextTheme(
           headline1: TextStyle(
               color: isDarkTheme ? Colors.white : Colors.black,

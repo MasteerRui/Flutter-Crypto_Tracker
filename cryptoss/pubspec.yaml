@@ -51,6 +51,10 @@ dependencies:
   currency_converter: ^0.0.3
   shimmer: ^2.0.0
   fl_chart: ^0.55.2
+  image: ^4.0.12
+  color_thief_dart: ^0.1.0
+  color: ^3.0.0
+  palette_generator: ^0.3.3+2
 
 dev_dependencies:
   flutter_test:

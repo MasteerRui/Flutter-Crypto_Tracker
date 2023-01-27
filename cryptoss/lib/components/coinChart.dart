@@ -5,9 +5,11 @@ import 'dart:math';
 class CoinChart extends StatefulWidget {
   CoinChart({
     super.key,
+    required this.color,
     required this.pricechart,
   });
 
+  final Color color;
   final List<double> pricechart;
 
   @override
@@ -69,7 +71,7 @@ class _CoinChartState extends State<CoinChart> {
 
   LineChartBarData get lineChartBarData => LineChartBarData(
         isCurved: true,
-        color: Colors.orangeAccent,
+        color: widget.color,
         barWidth: 1,
         dotData: FlDotData(show: false),
         spots: spots,

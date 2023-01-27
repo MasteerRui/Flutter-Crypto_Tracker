@@ -218,11 +218,17 @@ class _HomePageState extends State<HomePage> {
                                   return isLoading
                                       ? ListView.builder(
                                           shrinkWrap: true,
-                                          itemCount: 5,
+                                          itemCount: 3,
                                           itemBuilder: (context, index) {
-                                            return Skeleton(
-                                              width: 200,
-                                              height: 40,
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 6.0,
+                                                  right: 6.0,
+                                                  bottom: 5),
+                                              child: Skeleton(
+                                                width: 200,
+                                                height: 40,
+                                              ),
                                             );
                                           })
                                       : fcoins.isNotEmpty
@@ -470,82 +476,109 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   Expanded(
-                                    child: ListView.separated(
-                                      separatorBuilder: (context, index) =>
-                                          Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 15),
-                                        child: Divider(
-                                          color: Colors.grey[700],
-                                          height: 0,
-                                        ),
-                                      ),
-                                      itemCount: 100,
-                                      itemBuilder: (context, index) {
-                                        if (coinList.isNotEmpty) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          CoinDetailsPage(
-                                                            name:
-                                                                coinList[index]
-                                                                    .name,
-                                                            symbol:
-                                                                coinList[index]
-                                                                    .symbol,
-                                                            imageUrl:
-                                                                coinList[index]
-                                                                    .imageUrl,
-                                                            currency:
-                                                                selectedCurrency ??
-                                                                    'eur',
-                                                            price:
-                                                                coinList[index]
-                                                                    .price
-                                                                    .toDouble(),
-                                                            change:
-                                                                coinList[index]
-                                                                    .change
-                                                                    .toDouble(),
-                                                            changePercentage:
-                                                                coinList[index]
-                                                                    .changePercentage
-                                                                    .toDouble(),
-                                                            high24:
-                                                                coinList[index]
-                                                                    .high24
-                                                                    .toDouble(),
-                                                            pricechart:
-                                                                coinList[index]
-                                                                    .pricechart,
-                                                          )));
-                                            },
-                                            child: CoinCard(
-                                              primary: primary,
-                                              text: text!,
-                                              name: coinList[index].name,
-                                              symbol: coinList[index].symbol,
-                                              imageUrl:
-                                                  coinList[index].imageUrl,
-                                              currency:
-                                                  selectedCurrency ?? 'eur',
-                                              price: coinList[index]
-                                                  .price
-                                                  .toDouble(),
-                                              change: coinList[index]
-                                                  .change
-                                                  .toDouble(),
-                                              changePercentage: coinList[index]
-                                                  .changePercentage
-                                                  .toDouble(),
+                                    child: isLoading
+                                        ? ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: 20,
+                                            itemBuilder: (context, index) {
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 12.0,
+                                                    right: 12.0,
+                                                    bottom: 5),
+                                                child: Skeleton(
+                                                  width: 200,
+                                                  height: 50,
+                                                ),
+                                              );
+                                            })
+                                        : ListView.separated(
+                                            separatorBuilder:
+                                                (context, index) => Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 15),
+                                              child: Divider(
+                                                color: Colors.grey[700],
+                                                height: 0,
+                                              ),
                                             ),
-                                          );
-                                        }
-                                        return Container();
-                                      },
-                                    ),
+                                            itemCount: 100,
+                                            itemBuilder: (context, index) {
+                                              if (coinList.isNotEmpty) {
+                                                return GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                CoinDetailsPage(
+                                                                  name: coinList[
+                                                                          index]
+                                                                      .name,
+                                                                  symbol: coinList[
+                                                                          index]
+                                                                      .symbol,
+                                                                  imageUrl: coinList[
+                                                                          index]
+                                                                      .imageUrl,
+                                                                  currency:
+                                                                      selectedCurrency ??
+                                                                          'eur',
+                                                                  price: coinList[
+                                                                          index]
+                                                                      .price
+                                                                      .toDouble(),
+                                                                  change: coinList[
+                                                                          index]
+                                                                      .change
+                                                                      .toDouble(),
+                                                                  changePercentage: coinList[
+                                                                          index]
+                                                                      .changePercentage
+                                                                      .toDouble(),
+                                                                  high24: coinList[
+                                                                          index]
+                                                                      .high24
+                                                                      .toDouble(),
+                                                                  low24: coinList[
+                                                                          index]
+                                                                      .low24
+                                                                      .toDouble(),
+                                                                  rank: coinList[
+                                                                          index]
+                                                                      .rank
+                                                                      .toDouble(),
+                                                                  pricechart: coinList[
+                                                                          index]
+                                                                      .pricechart,
+                                                                )));
+                                                  },
+                                                  child: CoinCard(
+                                                    primary: primary,
+                                                    text: text!,
+                                                    name: coinList[index].name,
+                                                    symbol:
+                                                        coinList[index].symbol,
+                                                    imageUrl: coinList[index]
+                                                        .imageUrl,
+                                                    currency:
+                                                        selectedCurrency ??
+                                                            'eur',
+                                                    price: coinList[index]
+                                                        .price
+                                                        .toDouble(),
+                                                    change: coinList[index]
+                                                        .change
+                                                        .toDouble(),
+                                                    changePercentage:
+                                                        coinList[index]
+                                                            .changePercentage
+                                                            .toDouble(),
+                                                  ),
+                                                );
+                                              }
+                                              return Container();
+                                            },
+                                          ),
                                   ),
                                 ],
                               )),
