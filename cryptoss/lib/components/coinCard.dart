@@ -13,8 +13,8 @@ class CoinCard extends StatefulWidget {
     required this.imageUrl,
     required this.currency,
     required this.price,
-    required this.change,
-    required this.changePercentage,
+    required this.pchange,
+    required this.pchangePercentage,
   });
 
   Color primary;
@@ -24,8 +24,8 @@ class CoinCard extends StatefulWidget {
   String imageUrl;
   String currency;
   double price;
-  double change;
-  double changePercentage;
+  double pchange;
+  double pchangePercentage;
 
   @override
   State<CoinCard> createState() => _CoinCardState();
@@ -131,16 +131,18 @@ class _CoinCardState extends State<CoinCard> {
                   padding: EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: widget.changePercentage.toDouble() < 0
+                    color: widget.pchangePercentage.toDouble() < 0
                         ? Colors.red
                         : Colors.green,
                   ),
                   child: Text(
-                    widget.changePercentage.roundToDouble() < 0
-                        ? widget.changePercentage.roundToDouble().toString() +
+                    widget.pchangePercentage.roundToDouble() < 0
+                        ? widget.pchangePercentage.roundToDouble().toString() +
                             '%'
                         : '+' +
-                            widget.changePercentage.roundToDouble().toString() +
+                            widget.pchangePercentage
+                                .roundToDouble()
+                                .toString() +
                             '%',
                     style: TextStyle(
                       color: widget.text,
@@ -156,14 +158,14 @@ class _CoinCardState extends State<CoinCard> {
                   padding: EdgeInsets.all(3.5),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: widget.change.toDouble() < 0
+                    color: widget.pchange.toDouble() < 0
                         ? Colors.red
                         : Colors.green,
                   ),
                   child: Text(
-                    widget.change.toDouble() < 0
-                        ? widget.change.roundToDouble().toDouble().toString()
-                        : '+' + widget.change.toDouble().toString(),
+                    widget.pchange.toDouble() < 0
+                        ? widget.pchange.roundToDouble().toDouble().toString()
+                        : '+' + widget.pchange.toDouble().toString(),
                     style: TextStyle(
                       color: widget.text,
                       fontSize: 12,

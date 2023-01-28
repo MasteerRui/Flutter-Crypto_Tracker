@@ -1,15 +1,22 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cryptoss/components/coinChart.dart';
 import 'package:cryptoss/components/coinModel.dart';
+import 'package:cryptoss/main.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:palette_generator/palette_generator.dart';
 import '../../provider/firebase_auth_methods.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_html/flutter_html.dart';
 
 class CoinDetailsPage extends StatefulWidget {
   const CoinDetailsPage({
     super.key,
+    required this.id,
     required this.name,
     required this.symbol,
     required this.imageUrl,
@@ -20,9 +27,12 @@ class CoinDetailsPage extends StatefulWidget {
     required this.high24,
     required this.low24,
     required this.rank,
+    required this.pchange,
+    required this.pchangePercentage,
     required this.pricechart,
   });
 
+  final String id;
   final String name;
   final String symbol;
   final String imageUrl;
@@ -33,6 +43,8 @@ class CoinDetailsPage extends StatefulWidget {
   final double high24;
   final double low24;
   final double rank;
+  final double pchange;
+  final double pchangePercentage;
   final List<double> pricechart;
 
   @override
@@ -42,13 +54,33 @@ class CoinDetailsPage extends StatefulWidget {
 class _CoinDetailsPageState extends State<CoinDetailsPage> {
   bool coinExists = false;
   int currentIndex = 0;
+  String description = '';
   List<PaletteColor>? colors;
   @override
   void initState() {
     checkCoin(widget.name);
     colors = [];
+    getCryptocurrencyDefinition(widget.id);
     _updatePalettes(widget.imageUrl);
     super.initState();
+  }
+
+  Future<void> getCryptocurrencyDefinition(String id) async {
+    final response = await http
+        .get(Uri.parse('https://api.coingecko.com/api/v3/coins/${id}'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        description = data['description']['en'].toString().isNotEmpty
+            ? r'''''' + data['description']['en']
+            : r'''No description available.''';
+      });
+    } else {
+      setState(() {
+        description = r'''No description available''';
+      });
+    }
   }
 
   _updatePalettes(image) async {
@@ -184,13 +216,14 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  widget.changePercentage.roundToDouble() < 0
-                      ? widget.changePercentage.roundToDouble().toString() + '%'
+                  widget.pchangePercentage.roundToDouble() < 0
+                      ? widget.pchangePercentage.roundToDouble().toString() +
+                          '%'
                       : '+' +
-                          widget.changePercentage.roundToDouble().toString() +
+                          widget.pchangePercentage.roundToDouble().toString() +
                           '%',
                   style: TextStyle(
-                    color: widget.changePercentage.toDouble() < 0
+                    color: widget.pchangePercentage.toDouble() < 0
                         ? Colors.red
                         : Colors.green,
                     fontSize: 14,
@@ -200,11 +233,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                   width: 9,
                 ),
                 Text(
-                  widget.change.toDouble() < 0
-                      ? widget.change.roundToDouble().toDouble().toString()
-                      : '+' + widget.change.toDouble().toString(),
+                  widget.pchange.toDouble() < 0
+                      ? widget.pchange.roundToDouble().toDouble().toString()
+                      : '+' + widget.pchange.toDouble().toString(),
                   style: TextStyle(
-                    color: widget.change.toDouble() < 0
+                    color: widget.pchange.toDouble() < 0
                         ? Colors.red
                         : Colors.green,
                     fontSize: 14,
@@ -267,9 +300,18 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                     children: [
                       Stat(
                         title: "High 24h",
-                        wis: 'High 24h',
+                        wis: 'The highest ' +
+                            widget.name +
+                            ' has been in the last 24 hours.',
+                        wis2: widget.currency == 'eur'
+                            ? widget.high24.toString() + '\€'
+                            : widget.currency == 'usd'
+                                ? '\$' + widget.high24.toString()
+                                : widget.currency == 'btc'
+                                    ? '₿' + widget.high24.toString()
+                                    : '\$' + widget.high24.toString(),
                         color: false,
-                        value2: widget.changePercentage,
+                        value2: widget.high24,
                         mainColor: colors![currentIndex].color,
                         value: widget.currency == 'eur'
                             ? widget.high24.toStringAsFixed(0) + '\€'
@@ -282,7 +324,9 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                       Container(width: 30),
                       Stat(
                           title: "Symbol",
-                          wis: 'High 24h',
+                          wis:
+                              'The abbreviated name of a cryptocurrency\'s coin or token for trading purposes, which is similar to a stock symbol on the stock market. For example:',
+                          wis2: widget.symbol.toUpperCase(),
                           color: false,
                           mainColor: colors![currentIndex].color,
                           value2: widget.changePercentage,
@@ -294,7 +338,16 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                     children: [
                       Stat(
                         title: "Low 24h",
-                        wis: 'Low 24h',
+                        wis: 'The lowhest ' +
+                            widget.name +
+                            ' has been in the last 24 hours.',
+                        wis2: widget.currency == 'eur'
+                            ? widget.low24.toString() + '\€'
+                            : widget.currency == 'usd'
+                                ? '\$' + widget.low24.toString()
+                                : widget.currency == 'btc'
+                                    ? '₿' + widget.low24.toString()
+                                    : '\$' + widget.low24.toString(),
                         color: false,
                         mainColor: colors![currentIndex].color,
                         value2: widget.changePercentage,
@@ -309,7 +362,8 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                       Container(width: 30),
                       Stat(
                           title: "Rank",
-                          wis: 'High 24h',
+                          wis: 'Market Cap Rank',
+                          wis2: 'Top ' + widget.rank.toStringAsFixed(0),
                           color: false,
                           mainColor: colors![currentIndex].color,
                           value2: widget.changePercentage,
@@ -320,8 +374,15 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Stat(
-                        title: "Change 24h",
+                        title: "MK Change 24h",
                         wis: 'High 24h',
+                        wis2: widget.currency == 'eur'
+                            ? widget.high24.toStringAsFixed(0) + '\€'
+                            : widget.currency == 'usd'
+                                ? '\$' + widget.high24.toStringAsFixed(0)
+                                : widget.currency == 'btc'
+                                    ? '₿' + widget.high24.toStringAsFixed(0)
+                                    : '\$' + widget.high24.toStringAsFixed(0),
                         color: true,
                         mainColor: colors![currentIndex].color,
                         value2: widget.change,
@@ -335,20 +396,41 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                       ),
                       Container(width: 30),
                       Stat(
-                          title: "Price Ch 24h",
-                          wis: 'High 24h',
-                          mainColor: colors![currentIndex].color,
-                          color: false,
-                          value2: widget.changePercentage,
-                          value: '2'),
+                        title: "PC Change 24h",
+                        wis: 'High 24h',
+                        wis2: widget.currency == 'eur'
+                            ? widget.high24.toStringAsFixed(0) + '\€'
+                            : widget.currency == 'usd'
+                                ? '\$' + widget.high24.toStringAsFixed(0)
+                                : widget.currency == 'btc'
+                                    ? '₿' + widget.high24.toStringAsFixed(0)
+                                    : '\$' + widget.high24.toStringAsFixed(0),
+                        mainColor: colors![currentIndex].color,
+                        color: true,
+                        value2: widget.pchange,
+                        value: widget.currency == 'eur'
+                            ? widget.pchange.toStringAsFixed(2) + '\€'
+                            : widget.currency == 'usd'
+                                ? '\$' + widget.pchange.toStringAsFixed(2)
+                                : widget.currency == 'btc'
+                                    ? '₿' + widget.pchange.toStringAsFixed(2)
+                                    : '\$' + widget.pchange.toStringAsFixed(2),
+                      ),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Stat(
-                        title: "Change (%) 24h",
+                        title: "MK Change 24h",
                         wis: 'High 24h',
+                        wis2: widget.currency == 'eur'
+                            ? widget.high24.toStringAsFixed(0) + '\€'
+                            : widget.currency == 'usd'
+                                ? '\$' + widget.high24.toStringAsFixed(0)
+                                : widget.currency == 'btc'
+                                    ? '₿' + widget.high24.toStringAsFixed(0)
+                                    : '\$' + widget.high24.toStringAsFixed(0),
                         color: true,
                         mainColor: colors![currentIndex].color,
                         value2: widget.changePercentage,
@@ -360,17 +442,76 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                       ),
                       Container(width: 30),
                       Stat(
-                          title: "Price Ch 24h",
+                          title: "PC Change 24h",
                           wis: 'High 24h',
+                          wis2: widget.currency == 'eur'
+                              ? widget.high24.toStringAsFixed(0) + '\€'
+                              : widget.currency == 'usd'
+                                  ? '\$' + widget.high24.toStringAsFixed(0)
+                                  : widget.currency == 'btc'
+                                      ? '₿' + widget.high24.toStringAsFixed(0)
+                                      : '\$' + widget.high24.toStringAsFixed(0),
                           mainColor: colors![currentIndex].color,
-                          color: false,
-                          value2: widget.changePercentage,
-                          value: '2'),
+                          color: true,
+                          value2: widget.pchangePercentage,
+                          value: widget.pchangePercentage.roundToDouble() < 0
+                              ? widget.pchangePercentage.toStringAsFixed(2) +
+                                  '%'
+                              : '+' +
+                                  widget.pchangePercentage.toStringAsFixed(2) +
+                                  '%'),
                     ],
                   ),
                 ],
               ),
-            )
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 8, bottom: 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.name,
+                    style: TextStyle(
+                        color: colors![currentIndex].color,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    ' description',
+                    style: TextStyle(
+                        color: Theme.of(context).iconTheme.color,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+            description.isNotEmpty
+                ? Flexible(
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                      child: SingleChildScrollView(
+                        child: Html(
+                          data: description.toString(),
+                          style: {
+                            "body": Style(
+                                textAlign: TextAlign.justify,
+                                color: Theme.of(context).iconTheme.color),
+                            "a": Style(
+                                textAlign: TextAlign.justify,
+                                color: colors![currentIndex].color)
+                          },
+                        ),
+                      ),
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: CupertinoActivityIndicator(
+                        radius: 10, color: Theme.of(context).iconTheme.color),
+                  )
           ],
         ),
       ),
@@ -383,6 +524,7 @@ class Stat extends StatelessWidget {
   final String value;
   final double value2;
   final String wis;
+  final String wis2;
   final bool color;
   final Color mainColor;
 
@@ -391,6 +533,7 @@ class Stat extends StatelessWidget {
       required this.title,
       required this.value,
       required this.wis,
+      required this.wis2,
       required this.color,
       required this.value2,
       required this.mainColor});
@@ -405,7 +548,7 @@ class Stat extends StatelessWidget {
           showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(12),
@@ -413,9 +556,27 @@ class Stat extends StatelessWidget {
               ),
               title: Text(
                 title,
-                style: TextStyle(color: Theme.of(context).iconTheme.color),
+                style: TextStyle(color: mainColor),
               ),
-              content: Text(wis),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    wis,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(color: Theme.of(context).iconTheme.color),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: Text(
+                      wis2,
+                      style: TextStyle(color: mainColor),
+                    ),
+                  ),
+                ],
+              ),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -449,24 +610,33 @@ class Stat extends StatelessWidget {
           ),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text(
-              title,
-              style: TextStyle(
-                color: Theme.of(context).iconTheme.color,
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
+            Flexible(
+              flex: 5,
+              child: Text(
+                title,
+                style: TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  color: Theme.of(context).iconTheme.color,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
               ),
             ),
-            Text(
-              value,
-              style: TextStyle(
-                color: color
-                    ? value2 < 0
-                        ? Colors.red
-                        : Colors.green
-                    : mainColor,
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
+            Flexible(
+              flex: 3,
+              child: Text(
+                value,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  color: color
+                      ? value2 < 0
+                          ? Colors.red
+                          : Colors.green
+                      : mainColor,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
               ),
             ),
           ]),

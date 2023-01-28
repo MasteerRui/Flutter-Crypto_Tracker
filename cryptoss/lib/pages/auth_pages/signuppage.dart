@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -206,7 +208,70 @@ class _SignUpState extends State<SignUpPage> {
                 ),
               ),
               SizedBox(
-                height: 2.h,
+                height: 3.h,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 11.w),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Divider(
+                      thickness: 0.5,
+                      color: Colors.grey[800],
+                    )),
+                    Text(
+                      'Or continue with',
+                      style: TextStyle(
+                          color: Colors.grey[600], fontWeight: FontWeight.w400),
+                    ),
+                    Expanded(
+                        child: Divider(
+                      thickness: 0.5,
+                      color: Colors.grey[800],
+                    ))
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 3.h,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  (Platform.isIOS)
+                      ? Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(16),
+                              color: Colors.grey[200]),
+                          child: Image.asset(
+                            'assets/apple.png',
+                            height: 35,
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            context
+                                .read<FirebaseAuthMethods>()
+                                .signInWithGoogle(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(16),
+                                color: Colors.grey[200]),
+                            child: Image.asset(
+                              'assets/google.png',
+                              height: 35,
+                            ),
+                          ),
+                        ),
+                ],
+              ),
+              SizedBox(
+                height: 7.h,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

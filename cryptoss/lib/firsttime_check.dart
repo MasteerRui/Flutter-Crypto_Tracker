@@ -1,4 +1,5 @@
 import 'package:cryptoss/main.dart';
+import 'package:cryptoss/pages/main_pages/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:after_layout/after_layout.dart';
@@ -22,10 +23,9 @@ class _FirstTimeCheckPageState extends State<FirstTimeCheckPage>
             MaterialPageRoute(builder: (context) => const AuthWrapper()));
       });
     } else {
-      await prefs.setBool('seen', true);
       Timer(const Duration(milliseconds: 2000), () {
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const AuthWrapper()));
+            MaterialPageRoute(builder: (context) => const OnBoardingPage()));
       });
     }
   }

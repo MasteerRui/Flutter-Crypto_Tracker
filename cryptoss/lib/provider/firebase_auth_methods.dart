@@ -3,12 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:sizer/sizer.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../main.dart';
 
 class FirebaseAuthMethods {
   final FirebaseAuth _auth;
   FirebaseAuthMethods(this._auth);
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   User get user => _auth.currentUser!;
 
@@ -38,6 +40,7 @@ class FirebaseAuthMethods {
         "name": username,
         "idetifier": email,
         "accountCreatedAt": DateTime.now(),
+        "profilepicture": 'https://imgur.com/sfTdXmg.png',
         "currency": 'eur'
       };
       await docUser.set(newUser);
@@ -121,10 +124,62 @@ class FirebaseAuthMethods {
     }
   }
 
+  // GOOGLE SIGN IN
+  Future<void> signInWithGoogle(BuildContext context) async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      if (googleAuth?.accessToken != null && googleAuth?.idToken != null) {
+        // CREATE A NEW CREDENTIAL
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth?.accessToken,
+          idToken: googleAuth?.idToken,
+        );
+        UserCredential userCredential =
+            await _auth.signInWithCredential(credential);
+        if (userCredential.user != null) {
+          if (userCredential.additionalUserInfo!.isNewUser) {
+            final docUser = FirebaseFirestore.instance
+                .collection('users')
+                .doc(userCredential.user!.uid);
+            final newUser = {
+              "name": userCredential.user!.displayName,
+              "idetifier": userCredential.user!.email,
+              "profilepicture": userCredential.user!.photoURL,
+              "accountCreatedAt": DateTime.now(),
+              "currency": 'eur'
+            };
+            await docUser.set(newUser);
+          }
+        }
+      }
+    } on FirebaseException catch (e) {
+      Flushbar(
+        icon: const Icon(
+          Icons.email_outlined,
+          color: Colors.white,
+          size: 30,
+        ),
+        backgroundColor: const Color(0xFF0277BD),
+        duration: const Duration(seconds: 4),
+        message: "This email is already registered.",
+        messageSize: 18,
+        titleText: const Text("Flushbar with Icon.",
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white)),
+      ).show(context);
+    }
+  }
+
   // SIGN OUT
   Future<void> signOut(BuildContext context) async {
     try {
       await _auth.signOut();
+      await _googleSignIn.signOut();
     } on FirebaseAuthException catch (e) {
       Flushbar(
         icon: const Icon(

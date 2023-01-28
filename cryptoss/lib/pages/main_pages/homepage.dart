@@ -2,6 +2,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cryptoss/pages/main_pages/coin_details.dart';
+import 'package:cryptoss/pages/main_pages/profilepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -239,28 +240,75 @@ class _HomePageState extends State<HomePage> {
                                                 if (coinList.isNotEmpty) {
                                                   if (fcoins.contains(
                                                       coinList[index].name)) {
-                                                    return CoinCard(
-                                                      primary: primary,
-                                                      text: text!,
-                                                      name:
-                                                          coinList[index].name,
-                                                      symbol: coinList[index]
-                                                          .symbol,
-                                                      imageUrl: coinList[index]
-                                                          .imageUrl,
-                                                      currency:
-                                                          selectedCurrency ??
-                                                              'eur',
-                                                      price: coinList[index]
-                                                          .price
-                                                          .toDouble(),
-                                                      change: coinList[index]
-                                                          .change
-                                                          .toDouble(),
-                                                      changePercentage:
-                                                          coinList[index]
-                                                              .changePercentage
-                                                              .toDouble(),
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.of(context).push(
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        CoinDetailsPage(
+                                                                          id: coinList[index]
+                                                                              .id,
+                                                                          name:
+                                                                              coinList[index].name,
+                                                                          symbol:
+                                                                              coinList[index].symbol,
+                                                                          imageUrl:
+                                                                              coinList[index].imageUrl,
+                                                                          currency:
+                                                                              selectedCurrency ?? 'eur',
+                                                                          price: coinList[index]
+                                                                              .price
+                                                                              .toDouble(),
+                                                                          change: coinList[index]
+                                                                              .change
+                                                                              .toDouble(),
+                                                                          changePercentage: coinList[index]
+                                                                              .changePercentage
+                                                                              .toDouble(),
+                                                                          high24: coinList[index]
+                                                                              .high24
+                                                                              .toDouble(),
+                                                                          low24: coinList[index]
+                                                                              .low24
+                                                                              .toDouble(),
+                                                                          rank: coinList[index]
+                                                                              .rank
+                                                                              .toDouble(),
+                                                                          pchange: coinList[index]
+                                                                              .pchange
+                                                                              .toDouble(),
+                                                                          pchangePercentage: coinList[index]
+                                                                              .pchangePercentage
+                                                                              .toDouble(),
+                                                                          pricechart:
+                                                                              coinList[index].pricechart,
+                                                                        )));
+                                                      },
+                                                      child: CoinCard(
+                                                        primary: primary,
+                                                        text: text!,
+                                                        name: coinList[index]
+                                                            .name,
+                                                        symbol: coinList[index]
+                                                            .symbol,
+                                                        imageUrl:
+                                                            coinList[index]
+                                                                .imageUrl,
+                                                        currency:
+                                                            selectedCurrency ??
+                                                                'eur',
+                                                        price: coinList[index]
+                                                            .price
+                                                            .toDouble(),
+                                                        pchange: coinList[index]
+                                                            .pchange
+                                                            .toDouble(),
+                                                        pchangePercentage:
+                                                            coinList[index]
+                                                                .pchangePercentage
+                                                                .toDouble(),
+                                                      ),
                                                     );
                                                   }
                                                 }
@@ -352,15 +400,13 @@ class _HomePageState extends State<HomePage> {
                                             child: Row(
                                               children: [
                                                 Expanded(
-                                                    child: _currentTime == 0
-                                                        ? Center(
-                                                            child: CupertinoActivityIndicator(
-                                                                radius: 9,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .iconTheme
-                                                                    .color),
-                                                          )
+                                                    child: isLoading
+                                                        ? CupertinoActivityIndicator(
+                                                            radius: 9,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .iconTheme
+                                                                .color)
                                                         : Padding(
                                                             padding:
                                                                 const EdgeInsets
@@ -511,6 +557,9 @@ class _HomePageState extends State<HomePage> {
                                                         MaterialPageRoute(
                                                             builder: (context) =>
                                                                 CoinDetailsPage(
+                                                                  id: coinList[
+                                                                          index]
+                                                                      .id,
                                                                   name: coinList[
                                                                           index]
                                                                       .name,
@@ -547,6 +596,14 @@ class _HomePageState extends State<HomePage> {
                                                                           index]
                                                                       .rank
                                                                       .toDouble(),
+                                                                  pchange: coinList[
+                                                                          index]
+                                                                      .pchange
+                                                                      .toDouble(),
+                                                                  pchangePercentage: coinList[
+                                                                          index]
+                                                                      .pchangePercentage
+                                                                      .toDouble(),
                                                                   pricechart: coinList[
                                                                           index]
                                                                       .pricechart,
@@ -566,12 +623,12 @@ class _HomePageState extends State<HomePage> {
                                                     price: coinList[index]
                                                         .price
                                                         .toDouble(),
-                                                    change: coinList[index]
-                                                        .change
+                                                    pchange: coinList[index]
+                                                        .pchange
                                                         .toDouble(),
-                                                    changePercentage:
+                                                    pchangePercentage:
                                                         coinList[index]
-                                                            .changePercentage
+                                                            .pchangePercentage
                                                             .toDouble(),
                                                   ),
                                                 );
@@ -601,15 +658,28 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 child: Row(
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: Image.network(
-                                        user.photoURL!,
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
+                                    StreamBuilder<DocumentSnapshot>(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(user.uid)
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              child: Image.network(
+                                                snapshot
+                                                    .data!["profilepicture"],
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        }),
                                     SizedBox(
                                       width: 8,
                                     ),
@@ -634,19 +704,30 @@ class _HomePageState extends State<HomePage> {
                                         ],
                                       ),
                                     ),
-                                    Container(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 9.0, horizontal: 9),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                            color:
-                                                Theme.of(context).primaryColor),
-                                        child: Icon(
-                                          Icons.edit,
-                                          color:
-                                              Theme.of(context).iconTheme.color,
-                                        ))
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const ProfilePage()),
+                                        );
+                                      },
+                                      child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 9.0, horizontal: 9),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          child: Icon(
+                                            Icons.edit,
+                                            color: Theme.of(context)
+                                                .iconTheme
+                                                .color,
+                                          )),
+                                    )
                                   ],
                                 ),
                               ),

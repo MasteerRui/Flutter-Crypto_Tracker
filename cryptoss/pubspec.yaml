@@ -51,22 +51,52 @@ dependencies:
   currency_converter: ^0.0.3
   shimmer: ^2.0.0
   fl_chart: ^0.55.2
-  image: ^4.0.12
   color_thief_dart: ^0.1.0
   color: ^3.0.0
   palette_generator: ^0.3.3+2
+  html: ^0.15.1
+  flutter_html: ^3.0.0-alpha.6
+  smooth_page_indicator: ^1.0.0+2
+  google_sign_in: ^5.4.3
+  image_picker: ^0.8.6+1
+  firebase_storage: ^11.0.10
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^2.2.17
+  flutter_lints: ^2.0.0
 
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  # rules and activating additional ones
 
+flutter_native_splash:
+
+  android: true
+  ios: true
+  web: false
+
+  color: "#ffffff"
+  image: assets/logo.png
+
+  color_dark: "#121212"
+  image_dark: assets/logo.png
+
+
+  android_12:
+    color: "#ffffff"
+    image: assets/logo.png
+
+    color_dark: "#121212"
+    image_dark: assets/logo.png
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
