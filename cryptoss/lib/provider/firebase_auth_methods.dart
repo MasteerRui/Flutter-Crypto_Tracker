@@ -97,7 +97,7 @@ class FirebaseAuthMethods {
           icon: const Icon(
             Icons.error,
             size: 25.0,
-            color: Colors.blueAccent,
+            color: Colors.orangeAccent,
           ),
         ).show(context);
       } else if (password.isEmpty) {
@@ -117,7 +117,7 @@ class FirebaseAuthMethods {
           icon: const Icon(
             Icons.error,
             size: 25.0,
-            color: Colors.blueAccent,
+            color: Colors.orangeAccent,
           ),
         ).show(context);
       }

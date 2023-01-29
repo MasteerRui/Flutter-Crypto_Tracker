@@ -122,7 +122,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
     final user = context.read<FirebaseAuthMethods>().user;
     return Scaffold(
       appBar: AppBar(
-        shadowColor: colors![currentIndex].color,
+        shadowColor: colors!.length > 0 &&
+                currentIndex >= 0 &&
+                currentIndex < colors!.length
+            ? colors![currentIndex].color
+            : Colors.white,
         leading: BackButton(
           color: Theme.of(context).iconTheme.color,
           onPressed: () {
@@ -260,7 +264,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: CoinChart(
-                              color: colors![currentIndex].color,
+                              color: colors!.length > 0 &&
+                                      currentIndex >= 0 &&
+                                      currentIndex < colors!.length
+                                  ? colors![currentIndex].color
+                                  : Colors.white,
                               pricechart: widget.pricechart,
                             ),
                           ),
@@ -312,7 +320,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                                     : '\$' + widget.high24.toString(),
                         color: false,
                         value2: widget.high24,
-                        mainColor: colors![currentIndex].color,
+                        mainColor: colors!.length > 0 &&
+                                currentIndex >= 0 &&
+                                currentIndex < colors!.length
+                            ? colors![currentIndex].color
+                            : Colors.white,
                         value: widget.currency == 'eur'
                             ? widget.high24.toStringAsFixed(0) + '\€'
                             : widget.currency == 'usd'
@@ -328,7 +340,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                               'The abbreviated name of a cryptocurrency\'s coin or token for trading purposes, which is similar to a stock symbol on the stock market. For example:',
                           wis2: widget.symbol.toUpperCase(),
                           color: false,
-                          mainColor: colors![currentIndex].color,
+                          mainColor: colors!.length > 0 &&
+                                  currentIndex >= 0 &&
+                                  currentIndex < colors!.length
+                              ? colors![currentIndex].color
+                              : Colors.white,
                           value2: widget.changePercentage,
                           value: widget.symbol),
                     ],
@@ -349,7 +365,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                                     ? '₿' + widget.low24.toString()
                                     : '\$' + widget.low24.toString(),
                         color: false,
-                        mainColor: colors![currentIndex].color,
+                        mainColor: colors!.length > 0 &&
+                                currentIndex >= 0 &&
+                                currentIndex < colors!.length
+                            ? colors![currentIndex].color
+                            : Colors.white,
                         value2: widget.changePercentage,
                         value: widget.currency == 'eur'
                             ? widget.low24.toStringAsFixed(0) + '\€'
@@ -365,7 +385,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                           wis: 'Market Cap Rank',
                           wis2: 'Top ' + widget.rank.toStringAsFixed(0),
                           color: false,
-                          mainColor: colors![currentIndex].color,
+                          mainColor: colors!.length > 0 &&
+                                  currentIndex >= 0 &&
+                                  currentIndex < colors!.length
+                              ? colors![currentIndex].color
+                              : Colors.white,
                           value2: widget.changePercentage,
                           value: widget.rank.toStringAsFixed(0)),
                     ],
@@ -375,16 +399,20 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                     children: [
                       Stat(
                         title: "MK Change 24h",
-                        wis: 'High 24h',
+                        wis: 'Market Cap Change',
                         wis2: widget.currency == 'eur'
-                            ? widget.high24.toStringAsFixed(0) + '\€'
+                            ? widget.change.toString() + '\€'
                             : widget.currency == 'usd'
-                                ? '\$' + widget.high24.toStringAsFixed(0)
+                                ? '\$' + widget.change.toString()
                                 : widget.currency == 'btc'
-                                    ? '₿' + widget.high24.toStringAsFixed(0)
-                                    : '\$' + widget.high24.toStringAsFixed(0),
+                                    ? '₿' + widget.change.toString()
+                                    : '\$' + widget.change.toString(),
                         color: true,
-                        mainColor: colors![currentIndex].color,
+                        mainColor: colors!.length > 0 &&
+                                currentIndex >= 0 &&
+                                currentIndex < colors!.length
+                            ? colors![currentIndex].color
+                            : Colors.white,
                         value2: widget.change,
                         value: widget.currency == 'eur'
                             ? widget.change.toStringAsFixed(2) + '\€'
@@ -397,15 +425,19 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                       Container(width: 30),
                       Stat(
                         title: "PC Change 24h",
-                        wis: 'High 24h',
+                        wis: 'Price Change',
                         wis2: widget.currency == 'eur'
-                            ? widget.high24.toStringAsFixed(0) + '\€'
+                            ? widget.pchange.toString() + '\€'
                             : widget.currency == 'usd'
-                                ? '\$' + widget.high24.toStringAsFixed(0)
+                                ? '\$' + widget.pchange.toString()
                                 : widget.currency == 'btc'
-                                    ? '₿' + widget.high24.toStringAsFixed(0)
-                                    : '\$' + widget.high24.toStringAsFixed(0),
-                        mainColor: colors![currentIndex].color,
+                                    ? '₿' + widget.pchange.toString()
+                                    : '\$' + widget.pchange.toString(),
+                        mainColor: colors!.length > 0 &&
+                                currentIndex >= 0 &&
+                                currentIndex < colors!.length
+                            ? colors![currentIndex].color
+                            : Colors.white,
                         color: true,
                         value2: widget.pchange,
                         value: widget.currency == 'eur'
@@ -423,16 +455,16 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                     children: [
                       Stat(
                         title: "MK Change 24h",
-                        wis: 'High 24h',
-                        wis2: widget.currency == 'eur'
-                            ? widget.high24.toStringAsFixed(0) + '\€'
-                            : widget.currency == 'usd'
-                                ? '\$' + widget.high24.toStringAsFixed(0)
-                                : widget.currency == 'btc'
-                                    ? '₿' + widget.high24.toStringAsFixed(0)
-                                    : '\$' + widget.high24.toStringAsFixed(0),
+                        wis: 'Market Cap Percentage',
+                        wis2: widget.changePercentage.roundToDouble() < 0
+                            ? widget.changePercentage.toString() + '%'
+                            : '+' + widget.changePercentage.toString() + '%',
                         color: true,
-                        mainColor: colors![currentIndex].color,
+                        mainColor: colors!.length > 0 &&
+                                currentIndex >= 0 &&
+                                currentIndex < colors!.length
+                            ? colors![currentIndex].color
+                            : Colors.white,
                         value2: widget.changePercentage,
                         value: widget.changePercentage.roundToDouble() < 0
                             ? widget.changePercentage.toStringAsFixed(2) + '%'
@@ -443,15 +475,15 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                       Container(width: 30),
                       Stat(
                           title: "PC Change 24h",
-                          wis: 'High 24h',
-                          wis2: widget.currency == 'eur'
-                              ? widget.high24.toStringAsFixed(0) + '\€'
-                              : widget.currency == 'usd'
-                                  ? '\$' + widget.high24.toStringAsFixed(0)
-                                  : widget.currency == 'btc'
-                                      ? '₿' + widget.high24.toStringAsFixed(0)
-                                      : '\$' + widget.high24.toStringAsFixed(0),
-                          mainColor: colors![currentIndex].color,
+                          wis: 'Price Change Percentage',
+                          wis2: widget.pchangePercentage.roundToDouble() < 0
+                              ? widget.pchangePercentage.toString() + '%'
+                              : '+' + widget.pchangePercentage.toString() + '%',
+                          mainColor: colors!.length > 0 &&
+                                  currentIndex >= 0 &&
+                                  currentIndex < colors!.length
+                              ? colors![currentIndex].color
+                              : Colors.white,
                           color: true,
                           value2: widget.pchangePercentage,
                           value: widget.pchangePercentage.roundToDouble() < 0
@@ -473,7 +505,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                   Text(
                     widget.name,
                     style: TextStyle(
-                        color: colors![currentIndex].color,
+                        color: colors!.length > 0 &&
+                                currentIndex >= 0 &&
+                                currentIndex < colors!.length
+                            ? colors![currentIndex].color
+                            : Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w500),
                   ),
@@ -501,7 +537,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                                 color: Theme.of(context).iconTheme.color),
                             "a": Style(
                                 textAlign: TextAlign.justify,
-                                color: colors![currentIndex].color)
+                                color: colors!.length > 0 &&
+                                        currentIndex >= 0 &&
+                                        currentIndex < colors!.length
+                                    ? colors![currentIndex].color
+                                    : Colors.white)
                           },
                         ),
                       ),

@@ -80,9 +80,11 @@ class _HomePageState extends State<HomePage> {
         });
         fetchCoin();
       } else {
-        setState(() {
-          _currentTime = (_currentTime! - 1);
-        });
+        if (mounted) {
+          setState(() {
+            _currentTime = (_currentTime! - 1);
+          });
+        }
       }
     });
   }
@@ -197,182 +199,187 @@ class _HomePageState extends State<HomePage> {
                       padding:
                           const EdgeInsets.only(top: 15, left: 20, right: 20),
                       child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).backgroundColor,
-                              borderRadius: BorderRadius.circular(11)),
-                          child: Flexible(
-                            child: StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(user.uid)
-                                    .collection('favcoins')
-                                    .snapshots(),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                                  if (snapshot.hasData) {
-                                    fcoins.clear();
-                                    for (var doc in snapshot.data!.docs) {
-                                      fcoins.add(doc.id);
-                                    }
-                                  }
-                                  return isLoading
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).backgroundColor,
+                            borderRadius: BorderRadius.circular(11)),
+                        child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(user.uid)
+                                .collection('favcoins')
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasData) {
+                                fcoins.clear();
+                                for (var doc in snapshot.data!.docs) {
+                                  fcoins.add(doc.id);
+                                }
+                              }
+                              return isLoading
+                                  ? ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: 3,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 6.0, right: 6.0, bottom: 5),
+                                          child: Skeleton(
+                                            width: 200,
+                                            height: 40,
+                                          ),
+                                        );
+                                      })
+                                  : fcoins.isNotEmpty
                                       ? ListView.builder(
                                           shrinkWrap: true,
-                                          itemCount: 3,
+                                          itemCount: coinList.length,
                                           itemBuilder: (context, index) {
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 6.0,
-                                                  right: 6.0,
-                                                  bottom: 5),
-                                              child: Skeleton(
-                                                width: 200,
-                                                height: 40,
-                                              ),
-                                            );
-                                          })
-                                      : fcoins.isNotEmpty
-                                          ? ListView.builder(
-                                              shrinkWrap: true,
-                                              itemCount: coinList.length,
-                                              itemBuilder: (context, index) {
-                                                if (coinList.isNotEmpty) {
-                                                  if (fcoins.contains(
-                                                      coinList[index].name)) {
-                                                    return GestureDetector(
-                                                      onTap: () {
-                                                        Navigator.of(context).push(
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        CoinDetailsPage(
-                                                                          id: coinList[index]
-                                                                              .id,
-                                                                          name:
-                                                                              coinList[index].name,
-                                                                          symbol:
-                                                                              coinList[index].symbol,
-                                                                          imageUrl:
-                                                                              coinList[index].imageUrl,
-                                                                          currency:
-                                                                              selectedCurrency ?? 'eur',
-                                                                          price: coinList[index]
-                                                                              .price
-                                                                              .toDouble(),
-                                                                          change: coinList[index]
-                                                                              .change
-                                                                              .toDouble(),
-                                                                          changePercentage: coinList[index]
-                                                                              .changePercentage
-                                                                              .toDouble(),
-                                                                          high24: coinList[index]
-                                                                              .high24
-                                                                              .toDouble(),
-                                                                          low24: coinList[index]
-                                                                              .low24
-                                                                              .toDouble(),
-                                                                          rank: coinList[index]
-                                                                              .rank
-                                                                              .toDouble(),
-                                                                          pchange: coinList[index]
-                                                                              .pchange
-                                                                              .toDouble(),
-                                                                          pchangePercentage: coinList[index]
-                                                                              .pchangePercentage
-                                                                              .toDouble(),
-                                                                          pricechart:
-                                                                              coinList[index].pricechart,
-                                                                        )));
-                                                      },
-                                                      child: CoinCard(
-                                                        primary: primary,
-                                                        text: text!,
-                                                        name: coinList[index]
-                                                            .name,
-                                                        symbol: coinList[index]
-                                                            .symbol,
-                                                        imageUrl:
-                                                            coinList[index]
-                                                                .imageUrl,
-                                                        currency:
-                                                            selectedCurrency ??
-                                                                'eur',
-                                                        price: coinList[index]
-                                                            .price
+                                            if (coinList.isNotEmpty) {
+                                              if (fcoins.contains(
+                                                  coinList[index].name)) {
+                                                return GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                CoinDetailsPage(
+                                                                  id: coinList[
+                                                                          index]
+                                                                      .id,
+                                                                  name: coinList[
+                                                                          index]
+                                                                      .name,
+                                                                  symbol: coinList[
+                                                                          index]
+                                                                      .symbol,
+                                                                  imageUrl: coinList[
+                                                                          index]
+                                                                      .imageUrl,
+                                                                  currency:
+                                                                      selectedCurrency ??
+                                                                          'eur',
+                                                                  price: coinList[
+                                                                          index]
+                                                                      .price
+                                                                      .toDouble(),
+                                                                  change: coinList[
+                                                                          index]
+                                                                      .change
+                                                                      .toDouble(),
+                                                                  changePercentage: coinList[
+                                                                          index]
+                                                                      .changePercentage
+                                                                      .toDouble(),
+                                                                  high24: coinList[
+                                                                          index]
+                                                                      .high24
+                                                                      .toDouble(),
+                                                                  low24: coinList[
+                                                                          index]
+                                                                      .low24
+                                                                      .toDouble(),
+                                                                  rank: coinList[
+                                                                          index]
+                                                                      .rank
+                                                                      .toDouble(),
+                                                                  pchange: coinList[
+                                                                          index]
+                                                                      .pchange
+                                                                      .toDouble(),
+                                                                  pchangePercentage: coinList[
+                                                                          index]
+                                                                      .pchangePercentage
+                                                                      .toDouble(),
+                                                                  pricechart: coinList[
+                                                                          index]
+                                                                      .pricechart,
+                                                                )));
+                                                  },
+                                                  child: CoinCard(
+                                                    primary: primary,
+                                                    text: text!,
+                                                    name: coinList[index].name,
+                                                    symbol:
+                                                        coinList[index].symbol,
+                                                    imageUrl: coinList[index]
+                                                        .imageUrl,
+                                                    currency:
+                                                        selectedCurrency ??
+                                                            'eur',
+                                                    price: coinList[index]
+                                                        .price
+                                                        .toDouble(),
+                                                    pchange: coinList[index]
+                                                        .pchange
+                                                        .toDouble(),
+                                                    pchangePercentage:
+                                                        coinList[index]
+                                                            .pchangePercentage
                                                             .toDouble(),
-                                                        pchange: coinList[index]
-                                                            .pchange
-                                                            .toDouble(),
-                                                        pchangePercentage:
-                                                            coinList[index]
-                                                                .pchangePercentage
-                                                                .toDouble(),
-                                                      ),
-                                                    );
-                                                  }
-                                                }
-                                                return SizedBox.shrink();
-                                              },
-                                            )
-                                          : Container(
-                                              padding: EdgeInsets.all(8),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.stretch,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Image.asset(
-                                                    'assets/cloud-computing.png',
-                                                    height: 50,
                                                   ),
-                                                  Center(
-                                                      child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 5),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          'No favourite coins?',
-                                                          style: TextStyle(
-                                                              color: Theme.of(
-                                                                      context)
+                                                );
+                                              }
+                                            }
+                                            return SizedBox.shrink();
+                                          },
+                                        )
+                                      : Container(
+                                          padding: EdgeInsets.all(8),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Image.asset(
+                                                'assets/cloud-computing.png',
+                                                height: 50,
+                                              ),
+                                              Center(
+                                                  child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 5),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      'No favourite coins?',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Theme.of(context)
                                                                   .iconTheme
                                                                   .color),
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                        ),
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            setState(() {
-                                                              _selectedIndex =
-                                                                  1;
-                                                            });
-                                                          },
-                                                          child: Text(
-                                                            'add now',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .orangeAccent,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                          ),
-                                                        ),
-                                                      ],
+                                                      textAlign:
+                                                          TextAlign.center,
                                                     ),
-                                                  ))
-                                                ],
-                                              ),
-                                            );
-                                }),
-                          )),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _selectedIndex = 1;
+                                                        });
+                                                      },
+                                                      child: Text(
+                                                        'add now',
+                                                        style: TextStyle(
+                                                            color: Colors
+                                                                .orangeAccent,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ))
+                                            ],
+                                          ),
+                                        );
+                            }),
+                      ),
                     ),
                   ),
                 ],

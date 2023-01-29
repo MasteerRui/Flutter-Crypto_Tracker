@@ -1,3 +1,4 @@
+import 'package:cryptoss/pages/auth_pages/forgotpasswordpage.dart';
 import 'package:cryptoss/pages/auth_pages/signuppage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -111,13 +112,15 @@ class _LoginPageState extends State<LoginPage> {
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       // icon: Icon(Icons.mail),
                       suffixIcon: GestureDetector(
-                          onTap: () {
-                            isVisible = !isVisible;
-                            setState(() {});
-                          },
-                          child: Icon(isVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off)),
+                        onTap: () {
+                          isVisible = !isVisible;
+                          setState(() {});
+                        },
+                        child: Icon(
+                          isVisible ? Icons.visibility : Icons.visibility_off,
+                          color: Colors.orangeAccent,
+                        ),
+                      ),
                       hintText: 'type your password',
                       hintStyle: TextStyle(
                           color: Colors.white,
@@ -145,12 +148,13 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          /// Navigator.push(
-                          ///  context,
-                          ///  MaterialPageRoute(
-                          //      builder: (context) =>
-                          //          const ForgotPassWordPage()),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                maintainState: false,
+                                builder: (context) =>
+                                    const ForgotPasswordPage()),
+                          );
                         },
                         child: Text(
                           'Forgot Password?',
@@ -167,7 +171,9 @@ class _LoginPageState extends State<LoginPage> {
                   height: 3.h,
                 ),
                 GestureDetector(
-                  onTap: loginUser,
+                  onTap: () {
+                    loginUser();
+                  },
                   child: SizedBox(
                     width: 80.w,
                     height: 5.5.h,
@@ -265,6 +271,7 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
+                              maintainState: false,
                               builder: (context) => const SignUpPage()),
                         );
                       },

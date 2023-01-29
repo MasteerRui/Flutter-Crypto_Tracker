@@ -19,7 +19,7 @@ class IntroPage3 extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Tracking',
+                  'Stats',
                   style: TextStyle(color: Colors.orangeAccent, fontSize: 17),
                 ),
               ],
@@ -27,7 +27,7 @@ class IntroPage3 extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Keep track of all your favourite coins',
+                'See the stats of all your favourite coins',
                 style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),

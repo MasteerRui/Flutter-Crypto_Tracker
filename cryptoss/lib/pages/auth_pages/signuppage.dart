@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:cryptoss/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -165,9 +166,10 @@ class _SignUpState extends State<SignUpPage> {
                           isVisible = !isVisible;
                           setState(() {});
                         },
-                        child: Icon(isVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off)),
+                        child: Icon(
+                          isVisible ? Icons.visibility : Icons.visibility_off,
+                          color: Colors.orangeAccent,
+                        )),
                     hintText: 'type your password',
                     hintStyle: TextStyle(
                         color: Colors.white,
@@ -283,9 +285,10 @@ class _SignUpState extends State<SignUpPage> {
                   const SizedBox(width: 4),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushReplacement(
+                      Navigator.pop(
                         context,
                         MaterialPageRoute(
+                            maintainState: false,
                             builder: (context) => const LoginPage()),
                       );
                     },
